@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: monospace;
+  font-size: 10px;
+}
+
+:root {
+  --titulo: rgb(37, 32, 32);
+  --text: rgb(124, 124, 117);
+  --text-f: rgb(184, 179, 194);
+}

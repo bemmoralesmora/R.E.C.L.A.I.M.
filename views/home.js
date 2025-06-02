@@ -47,8 +47,15 @@ function home() {
   let img_c = document.createElement("button");
   img_c.className = "img_c";
   img_c.innerHTML = `
-  <img src="../assets/personaje.png" alt="">
+    <img src="../assets/personaje.png" alt="">
   `;
+  // Añadir evento al botón
+  img_c.addEventListener("click", () => {
+    // Eliminar el contenido actual
+    document.querySelector("#root").innerHTML = "";
+    // Cargar el juego principal
+    loadMainGame();
+  });
   contenido.appendChild(img_c);
 
   let text_c2 = document.createElement("div");
@@ -64,6 +71,48 @@ function home() {
   home.appendChild(texto_final);
 
   return home;
+}
+
+function loadMainGame() {
+  const config = {
+    width: 1000,
+    height: 360,
+    parent: "root", // Cambiado a "root" para que use el mismo contenedor
+    type: Phaser.AUTO,
+    scene: {
+      preload: preload,
+      create: create,
+      update: update,
+    },
+    physics: {
+      default: "arcade",
+      arcade: {
+        debug: true,
+      },
+    },
+  };
+
+  new Phaser.Game(config);
+}
+
+function preload() {
+  this.load.image("bird", "../assets/bird.png");
+}
+
+function create() {
+  this.pajaro = this.physics.add.sprite(50, 50, "bird");
+  this.pajaro.setCollideWorldBounds(true);
+
+  this.right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+  this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+}
+
+function update() {
+  if (this.right.isDown) {
+    this.pajaro.x++;
+  } else if (this.left.isDown) {
+    this.pajaro.x--;
+  }
 }
 
 export { home };

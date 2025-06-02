@@ -1,4 +1,5 @@
 import { home } from "../views/home.js";
+
 function dom() {
   let dom = document.querySelector("#root");
   dom.className = "dom";
@@ -7,5 +8,3 @@ function dom() {
 }
 
 dom();
-
-export { dom };

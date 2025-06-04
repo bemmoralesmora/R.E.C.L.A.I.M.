@@ -97,22 +97,83 @@ function loadMainGame() {
 
 function preload() {
   this.load.image("bird", "../assets/bird.png");
+  this.load.image("ground", "../assets/ground.png"); // Puedes usar un bloque simple si no tienes esta imagen
+  this.load.image("tubo", "../assets/tubo.png")
 }
 
 function create() {
-  this.pajaro = this.physics.add.sprite(50, 50, "bird");
+  this.pajaro = this.physics.add.sprite(100, 100, "bird");
+  this.pajaro.setBounce(0.1);
   this.pajaro.setCollideWorldBounds(true);
+  this.pajaro.body.setGravityY(500);
 
-  this.right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-  this.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+  // Suelo
+  this.suelo = this.physics.add.staticGroup();
+  this.suelo.create(500, 340, null).setDisplaySize(1000, 30).refreshBody();
+  this.add.rectangle(500, 340, 1000, 30, 0x00ff00).setOrigin(0.5);
+
+  // Tubos
+  this.tubos = this.physics.add.group(); // Grupo dinámico para mover
+
+  this.tubo1 = this.tubos.create(600, 290, "tubo").setScale(0.5);
+  this.tubo2 = this.tubos.create(900, 290, "tubo").setScale(0.5);
+  
+  this.tubos.children.iterate((tubo) => {
+    tubo.setImmovable(true); // Que no se muevan por colisión
+    tubo.body.allowGravity = false; // Sin gravedad
+    tubo.refreshBody();
+  });
+  
+  this.physics.add.collider(this.pajaro, this.tubos);
+  
+
+  // Colisiones
+  this.physics.add.collider(this.pajaro, this.suelo);
+  this.physics.add.collider(this.pajaro, this.tubos); // Colisión con todos los tubos
+
+  // Controles
+  this.teclaA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+  this.teclaD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+  this.teclaEspacio = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+  this.saltosDisponibles = 2;
 }
+
+
 
 function update() {
-  if (this.right.isDown) {
-    this.pajaro.x++;
-  } else if (this.left.isDown) {
-    this.pajaro.x--;
+  // Movimiento con A y D
+  if (this.teclaA.isDown) {
+    this.pajaro.setVelocityX(-160);
+    this.pajaro.setFlipX(true); // 👈 Voltea hacia la izquierda
+  } else if (this.teclaD.isDown) {
+    this.pajaro.setVelocityX(160);
+    this.pajaro.setFlipX(false); // 👈 Mira a la derecha
+  } else {
+    this.pajaro.setVelocityX(0);
   }
+
+  // Reiniciar doble salto al tocar el suelo
+  if (this.pajaro.body.touching.down) {
+    this.saltosDisponibles = 2;
+  }
+
+  // Salto doble con espacio
+  if (Phaser.Input.Keyboard.JustDown(this.teclaEspacio) && this.saltosDisponibles > 0) {
+    this.pajaro.setVelocityY(-350);
+    this.saltosDisponibles--;
+  }
+
+  this.tubos.children.iterate((tubo) => {
+    tubo.x -= 2; // Velocidad hacia la izquierda
+    if (tubo.x < -50) { // Si sale de pantalla, lo reubicas al final
+      tubo.x = 1000;
+    }
+    tubo.refreshBody(); // Refresca el cuerpo físico
+  });
+  
 }
+
+
+
 
 export { home };

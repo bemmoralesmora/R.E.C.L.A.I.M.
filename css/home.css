@@ -49,22 +49,6 @@
   position: absolute;
 }
 
-.text_c1,
-.text_c2 {
-  width: 25rem;
-  min-height: 25rem;
-  font-family: "Anton", sans-serif;
-  font-size: 2rem;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  box-sizing: border-box;
-  text-align: center;
-  text-shadow: 0px 2px 0px #ffffff;
-}
-
 .img_c {
   width: 35rem;
   height: 35rem;
